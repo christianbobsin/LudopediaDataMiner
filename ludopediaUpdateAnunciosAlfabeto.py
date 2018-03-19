@@ -65,9 +65,10 @@ for id in cursor.fetchall():
 	else:
 		preco = 0.0
 
-	status = tree.xpath('//td/span/text()')
-
+	status          = tree.xpath('//td/span/text()')
 	validadeAnuncio = tree.xpath('//td/text()')
+	
+	estadoJogo      = validadeAnuncio[6]
 
 	if len(validadeAnuncio):
 		validadeAnuncio[4] = validadeAnuncio[4].replace(',',' ')
@@ -111,28 +112,15 @@ for id in cursor.fetchall():
 
 		if ( len(status[1]) > 15 ):
 			status[1] = 'Ativo'
-
-		#print 'Jogo:     ', jogoNome[0]
-		#print 'Detalhes  ', detalhes
-		#print 'Preco:    ', str(preco)
-		#print 'Status:   ', status[1]
-		#print 'Validade: ', data
-		#print 'Estado:   ', validadeAnuncio[6]
-		#print 'Local:    ', validadeAnuncio[8]
-		#print 'Vendedor: ', vendedor
-		#print 'Comprador:', comprador
-		#print ' '
-
-
+		
 		formatedRow = "{0:4} {1:7} {2:16} {3:12}  {4:7}  {5}".format( str( jogoCount ).zfill( 4 ),
 		                                                  str( id[0] ),
 														  status[1],
-														  validadeAnuncio[6],
+														  estadoJogo,
 														  str(preco),
 														  jogoNome[0] )
 
 		print  formatedRow  
-
 
 		if ( comprador != 'Comprar'):
 			jogosAtulizados = jogosAtulizados + 1
