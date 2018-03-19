@@ -123,7 +123,15 @@ for id in cursor.fetchall():
 		#print 'Comprador:', comprador
 		#print ' '
 
-		print str( jogoCount ).zfill( 4 ) + ' ' + str( id[0] ) + '\t ' + status[1] + '   \t ' + validadeAnuncio[6] + '     \t ' + str(preco) +  '\t ' + jogoNome[0]
+
+		formatedRow = "{0:4} {1:7} {2:16} {3:12}  {4:7}  {5}".format( str( jogoCount ).zfill( 4 ),
+		                                                  str( id[0] ),
+														  status[1],
+														  validadeAnuncio[6],
+														  str(preco),
+														  jogoNome[0] )
+
+		print  formatedRow  
 
 
 		if ( comprador != 'Comprar'):
