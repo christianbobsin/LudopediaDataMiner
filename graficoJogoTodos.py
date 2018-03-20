@@ -124,7 +124,7 @@ for nomeJogo in nomesJogos:
         plotDataU.append(dado[1])
         plotMediaU.append( np.mean( plotDataU ) )
 
-    mediaU = np.mean( plotDataU )
+    mediaU = np.median( plotDataU )
 
 
     con.close()
@@ -156,7 +156,7 @@ for nomeJogo in nomesJogos:
         plotDataN.append(dado[1])
         plotMediaN.append( np.mean( plotDataN ) )
 
-    mediaN = np.mean( plotDataN )
+    mediaN = np.median( plotDataN )
 
     con.close()
 
@@ -185,9 +185,41 @@ for nomeJogo in nomesJogos:
             xValueA.append( datetime.datetime.strptime( dado[3], '%Y-%m-%d %H:%M:%S.%f' ) )
         plotDataA.append(dado[1])
 
-    mediaA = np.mean( plotDataA )
+    mediaA = np.median( plotDataA )
 
     con.close()
+
+
+    ##########################################################################
+    # DADOS JOGOS APAGADOS / INATVOS
+    ##########################################################################
+
+    con = sqlite3.connect('ludopedia.db')
+    cursor = con.cursor()
+
+    cursor.execute("""SELECT JOGO, PRECO, strftime( '%Y%m', validade ) AS dt, VALIDADE FROM JOGOS
+                  WHERE (STATUS LIKE '%apagado%' or STATUS LIKE '%inativo')  AND jogo = ? AND preco > 4 ORDER BY validade ASC """, [nomeJogo[0]])
+
+    dados = cursor.fetchall()
+
+    plotDataI = list()
+    xValueI = list()
+    #avgSeries = list()
+    #desvPadSup = list()
+    #desvPadInf = list()
+
+    for dado in dados:
+        try:
+            xValueI.append( datetime.datetime.strptime( dado[3], '%Y-%m-%d %H:%M:%S' ) )
+        except:
+            xValueI.append( datetime.datetime.strptime( dado[3], '%Y-%m-%d %H:%M:%S.%f' ) )
+        plotDataI.append(dado[1])
+
+    mediaI = np.median( plotDataI )
+
+    con.close()
+
+
 
     ##########################################################################
     # DADOS JOGOS ATIVOS LACRADOS
@@ -214,7 +246,7 @@ for nomeJogo in nomesJogos:
             xValueAtL.append( datetime.datetime.strptime( dado[3], '%Y-%m-%d %H:%M:%S.%f' ) )
         plotDataAtL.append(dado[1])
 
-    mediaAtL = np.mean( plotDataAtL )
+    mediaAtL = np.median( plotDataAtL )
 
     con.close()
 
@@ -243,7 +275,7 @@ for nomeJogo in nomesJogos:
             xValueAt.append( datetime.datetime.strptime( dado[3], '%Y-%m-%d %H:%M:%S.%f' ) )
         plotDataAt.append(dado[1])
 
-    mediaAt = np.mean( plotDataAt )
+    mediaAt = np.median( plotDataAt )
 
     con.close()
 
@@ -290,6 +322,7 @@ for nomeJogo in nomesJogos:
     line = plt.plot( xValueA, plotDataA, 'yo', linewidth = 2 )
     line = plt.plot( xValueAtL, plotDataAtL, 'o', color='lime', linewidth = 2 )
     line = plt.plot( xValueAt, plotDataAt, 'o', color='pink', linewidth = 2 )
+    line = plt.plot( xValueI, plotDataI, 'o', color='grey', linewidth = 2 )
     #my_xticks = xValue
 
     plt.title('Vendas de: ' + nomeJogo[0] + '')
@@ -312,7 +345,8 @@ for nomeJogo in nomesJogos:
     yellow_patch = mpatches.Patch(color='y',  label='Avariado: ' + str( round( mediaA, 2) ) + ' ( ' + str( len( plotDataA ) ) + ' )' )
     cyan_patch = mpatches.Patch(color='lime',  label='Ativos (L): ' + str( round( mediaAtL, 2) ) + ' ( ' + str( len( plotDataAtL ) ) + ' )' )
     pink_patch = mpatches.Patch(color='pink',  label='Ativos: ' + str( round( mediaAt, 2) ) + ' ( ' + str( len( plotDataAt ) ) + ' )' )
-    plt.legend(handles=[blue_patch, purple_patch, red_patch, yellow_patch, cyan_patch, pink_patch])
+    grey_patch = mpatches.Patch(color='grey',  label='Inat/Ap: ' + str( round( mediaI, 2) ) + ' ( ' + str( len( plotDataI ) ) + ' )' )
+    plt.legend(handles=[blue_patch, purple_patch, red_patch, yellow_patch, cyan_patch, pink_patch, grey_patch])
 
 
     #plt.show()
