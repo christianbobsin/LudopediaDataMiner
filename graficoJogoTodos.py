@@ -336,7 +336,7 @@ for nomeJogo in nomesJogos:
     #line.set_dashes(dashes)
 
     ########################################################################
-    # LENGENDAS
+    # LEGENDAS
     ########################################################################
 
     red_patch = mpatches.Patch(color='red',   label='Usado: ' + str( round( mediaU, 2) ) + ' ( ' + str( len( plotDataU ) ) + ' )'  )
